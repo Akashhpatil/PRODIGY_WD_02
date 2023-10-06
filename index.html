@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Stopwatch</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+
+  .stopwatch-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 5px solid #333;
+    margin: 50px auto;
+  }
+
+  .stopwatch {
+    font-size: 48px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .controls button {
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .controls button:hover {
+    background-color: #45a049;
+  }
+
+  .lap-list {
+    list-style-type: none;
+    position: relative;
+    height: 250px;
+    width: 250px;
+    padding: 30px 0;
+    max-height: 150px; /* Set a maximum height */
+    overflow-y: auto; /* Enable vertical scrollbar */
+}
+
+.lap-time {
+    font-size: 18px;
+    text-align: center; /* Center the text */
+    margin: 5px;
+    background-color: #f2f2f2;
+    padding: 10px;
+    border-radius: 17px;
+    display: block; /* Change display to block */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Add a subtle shadow effect */
+    transition: transform 0.3s; /* Add a smooth transition effect */
+    margin-bottom: 15px;
+}
+
+.lap-time:hover {
+    transform: scale(1.05); /* Scale up the lap time on hover */
+}
+
+.stopwatch-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 5px solid #333;
+    margin: 0 auto 50px; /* Center the container horizontally and add some space at the bottom */
+}
+
+.lap-list {
+    list-style-type: none;
+    position: relative;
+    height: 250px;
+    width: 250px;
+    margin: 0 auto; /* Center the lap list horizontally */
+    padding: 30px 0;
+    max-height: 150px; /* Set a maximum height */
+    overflow-y: auto; /* Enable vertical scrollbar */
+    scrollbar-width: none; /* Hide scrollbar on Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar on IE and Edge */
+}
+
+.lap-list::-webkit-scrollbar {
+    display: none; /* Hide scrollbar on Chrome and Safari */
+}
+
+</style>
+</head>
+<body>
+  <div class="stopwatch-container">
+    <div class="stopwatch">00:00:00</div>
+  </div>
+  <div class="controls">
+    <button id="startStop">Start</button>
+    <button id="lap">Lap</button>
+    <button id="reset">Reset Laps</button>
+  </div>
+  <ul class="lap-list" id="lapList">
+   
+  <script>
+     let timer;
+    let running = false;
+    let lapCounter = 1;
+
+    function startStop() {
+      if (running) {
+        clearInterval(timer);
+        document.getElementById('startStop').textContent = 'Start';
+      } else {
+        timer = setInterval(updateDisplay, 1000);
+        document.getElementById('startStop').textContent = 'Pause';
+      }
+      running = !running;
+    }
+
+    function lap() {
+      if (running) {
+        const lapList = document.getElementById('lapList');
+        const lapTime = document.createElement('li');
+        lapTime.classList.add('lap-time');
+        lapTime.textContent = `Lap ${lapCounter}: ${document.querySelector('.stopwatch').textContent}`;
+        lapList.appendChild(lapTime);
+        lapCounter++;
+      }
+    }
+
+    function lapReset() {
+      lapCounter = 1;
+      document.querySelector('.stopwatch').textContent = '00:00:00';
+      const lapList = document.getElementById('lapList');
+      lapList.innerHTML = '';
+    }
+
+    function updateDisplay() {
+      const stopwatch = document.querySelector('.stopwatch');
+      const time = stopwatch.textContent.split(':');
+      let hours = parseInt(time[0]);
+      let minutes = parseInt(time[1]);
+      let seconds = parseInt(time[2]);
+
+      seconds++;
+
+      if (seconds === 60) {
+        seconds = 0;
+        minutes++;
+      }
+
+      if (minutes === 60) {
+        minutes = 0;
+        hours++;
+      }
+
+      hours = hours.toString().padStart(2, '0');
+      minutes = minutes.toString().padStart(2, '0');
+      seconds = seconds.toString().padStart(2, '0');
+
+      stopwatch.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    function resetLaps() {
+      lapReset();
+    }
+
+    document.getElementById('startStop').addEventListener('click', startStop);
+    document.getElementById('lap').addEventListener('click', lap);
+    document.getElementById('reset').addEventListener('click', resetLaps);
+  </script>
+</body>
+</html>
